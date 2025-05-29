@@ -1,26 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First PWA</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000"> </head>
-<body>
-  <p>Hello, PWA World!</p>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flappy Shape PWA</title>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js') // Path relative to index.html
-          .then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          })
-          .catch(error => {
-            console.log('ServiceWorker registration failed: ', error);
-          });
-      });
-    }
-  </script>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#70c5ce"> <link rel="stylesheet" href="game-style.css">
+
+</head>
+<body>
+    <div id="instructions">Tap screen or Press Space to Flap!</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="scoreBoard">Score: 0</div>
+    <div class="controls-container">
+        <button id="restartButton" style="display: none;">Restart Game</button>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+
+    <script src="game-script.js"></script>
 </body>
 </html>
