@@ -1,11 +1,12 @@
 {
-  "name": "My First PWA",
-  "short_name": "MyPWA",
-  "description": "A simple Progressive Web App.",
+  "name": "Flappy Shape PWA Game",
+  "short_name": "FlappyShape",
+  "description": "A simple and fun Flappy Bird style game built as a PWA.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#70c5ce",
+  "theme_color": "#70c5ce",
+  "orientation": "portrait",
   "scope": ".",
   "icons": [
     {
