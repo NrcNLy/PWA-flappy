@@ -150,3 +150,105 @@ function flap() {
     }
     bird.velocity = lift;
 }
+
+function endGame() {
+    if (gameOver) return; // Prevent multiple calls if already over
+    gameOver = true;
+    // gameStarted remains true to indicate the game session occurred, or could be set to false.
+    // For current logic, it just stops updates via the gameOver flag.
+    restartButton.style.display = 'block';
+    instructionsDiv.textContent = "Game Over! Tap Restart.";
+    instructionsDiv.style.display = 'block';
+}
+
+let gameLoopId = null;
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    updateBird();
+    updatePipes();
+
+    drawPipes(); // Draw pipes behind bird
+    drawBird(); // Draw bird on top
+
+    if (gameStarted && !gameOver) {
+         frames++;
+    }
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+// Event listeners for controls
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault(); // Prevent page scrolling
+        flap();
+    }
+});
+// Handle touch and mouse click on canvas for flapping
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent page scrolling/zooming on touch
+    flap();
+});
+ canvas.addEventListener('mousedown', (e) => {
+    e.preventDefault(); // Prevent text selection or other default actions
+    flap();
+});
+
+// Restart game button
+restartButton.addEventListener('click', () => {
+    if (gameLoopId) {
+        cancelAnimationFrame(gameLoopId);
+        gameLoopId = null;
+    }
+    setup(); // Re-initialize and start game
+});
+
+// Handle window resize events
+window.addEventListener('resize', () => {
+    // Preserve game state before it's reset by setup()
+    const currentScore = score;
+    const birdX = bird ? bird.x : 50; // Keep bird's horizontal position
+    const wasGameOver = gameOver;
+    const wasGameStarted = gameStarted;
+
+    // Stop the current game loop to prevent errors or multiple loops
+    if (gameLoopId) {
+        cancelAnimationFrame(gameLoopId);
+        gameLoopId = null;
+    }
+
+    // resizeCanvas() is called first inside setup(), so no need to call it here explicitly if setup is called.
+    // However, calling it here ensures canvas dimensions are updated before setup potentially uses them.
+    resizeCanvas(); // Update canvas drawing buffer size first
+
+    // setup() re-initializes game elements based on new canvas size
+    // and resets score, gameOver, gameStarted, etc. It also starts a new gameLoop.
+    setup();
+
+    // Restore the preserved state after setup() has run
+    score = currentScore;
+    scoreBoard.textContent = "Score: " + score;
+
+    if (bird) { // bird object is recreated by setup()
+        bird.x = birdX; // Restore its horizontal position
+        // bird.y is set to canvas.height / 2 by setup(), which is appropriate.
+    }
+
+    gameStarted = wasGameStarted; // Restore whether the game had actually started
+
+    if (wasGameOver) {
+        endGame(); // This will correctly set gameOver = true and update UI
+    } else if (wasGameStarted) {
+        instructionsDiv.style.display = 'none'; // If game was running, hide instructions
+    }
+    // If game was not started (!wasGameStarted), setup() handles showing instructions.
+
+    // An immediate redraw after state restoration ensures the UI is correct.
+    // Note: setup() calls gameLoop(), which will also draw. This is for the very first frame.
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPipes(); // Pipes are reset by setup
+    drawBird();  // Bird is at its new/restored position
+});
+
+// Initial setup when the script loads
+setup();
