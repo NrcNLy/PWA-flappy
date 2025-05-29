@@ -1,10 +1,12 @@
-const CACHE_NAME = 'my-pwa-cache-v2'; // Consider updating cache name when files change
+const CACHE_NAME = 'flappy-pwa-cache-v1'; // Updated cache name
 const urlsToCache = [
-  './',                 // Represents the root of the current directory (e.g., /pwa1/)
-  'index.html',         // Same as './index.html'
-  'manifest.json',      // Same as './manifest.json'
-  'icon-monk.png'       // Same as './icon-monk.png'
-  // Add any other crucial assets here, like CSS files or other JavaScript files
+  './',                     // The root of your site (e.g., /pwa1/)
+  'index.html',
+  'manifest.json',
+  'game-style.css',         // New game stylesheet
+  'game-script.js',         // New game script
+  'icon-monk.png'           // PWA icon, still needed for the manifest
+  // Add any other assets your PWA shell might need
 ];
 
 // Install event: cache files
@@ -35,16 +37,11 @@ self.addEventListener('fetch', event => {
         return fetch(event.request).then(
           networkResponse => {
             // Check if we received a valid response
-            if(!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
               return networkResponse;
             }
 
-            // IMPORTANT: Clone the response. A response is a stream
-            // and because we want the browser to consume the response
-            // as well as the cache consuming the response, we need
-            // to clone it so we have two streams.
             const responseToCache = networkResponse.clone();
-
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
@@ -53,9 +50,9 @@ self.addEventListener('fetch', event => {
             return networkResponse;
           }
         ).catch(error => {
-          console.error('Fetch failed; returning offline page instead.', error);
-          // Optionally, return a custom offline fallback page:
-          // return caches.match('/offline.html'); 
+          console.error('Fetch failed for:', event.request.url, error);
+          // Optionally, return a custom offline fallback page here
+          // For example: if (event.request.mode === 'navigate') return caches.match('/offline.html');
         });
       })
   );
