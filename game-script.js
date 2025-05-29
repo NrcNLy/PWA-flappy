@@ -23,21 +23,19 @@ const birdColor = 'yellow'; // Color for the bird shape
 // Function to resize the canvas drawing buffer and maintain aspect ratio
 function resizeCanvas() {
     const aspectRatio = 16 / 9;
-    // Calculate available space based on CSS max-width/max-height and window size
-    let containerWidth = canvas.parentElement.clientWidth * 0.95;
-    let containerHeight = window.innerHeight * 0.85; // Leave v-space for other UI
+    let containerWidth = canvas.parentElement ? canvas.parentElement.clientWidth * 0.95 : window.innerWidth * 0.9;
+    let containerHeight = window.innerHeight * 0.85;
 
     let newWidth = containerWidth;
     let newHeight = containerHeight;
 
-    // Adjust to maintain aspect ratio within the available space
-    if (newWidth / newHeight > aspectRatio) { // Container is wider than aspect ratio allows
+    if (newWidth / newHeight > aspectRatio) {
         newWidth = newHeight * aspectRatio;
-    } else { // Container is taller than aspect ratio allows
+    } else {
         newHeight = newWidth / aspectRatio;
     }
 
-    const maxWidth = 700; // Absolute max game width
+    const maxWidth = 700;
     const maxHeight = maxWidth / aspectRatio;
 
     canvas.width = Math.min(newWidth, maxWidth);
@@ -45,16 +43,15 @@ function resizeCanvas() {
 }
 
 function setup() {
-    resizeCanvas(); // Set canvas drawing buffer size
+    resizeCanvas();
     bird = {
         x: 50,
-        y: canvas.height / 2 - birdHeight / 2, // Position bird in the new center
+        y: canvas.height / 2 - birdHeight / 2,
         width: birdWidth,
         height: birdHeight,
         velocity: 0
     };
     pipes = [];
-    // Score, gameOver, gameStarted are reset here. They will be restored by the resize handler if needed.
     score = 0;
     frames = 0;
     gameOver = false;
@@ -65,36 +62,32 @@ function setup() {
     instructionsDiv.style.display = 'block';
     instructionsDiv.textContent = "Tap screen or Press Space to Flap!";
 
-    // Ensure game loop is started if not already running (relevant for initial setup)
     if (!gameLoopId) {
         gameLoop();
     }
 }
 
 function drawBird() {
+    if (!bird) return;
     ctx.fillStyle = birdColor;
     ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 }
 
 function drawPipes() {
-    ctx.fillStyle = '#2e8b57'; // Sea green for pipes
+    ctx.fillStyle = '#2e8b57';
     pipes.forEach(pipe => {
-        // Top pipe
         ctx.fillRect(pipe.x, 0, pipe.width, pipe.topHeight);
-        // Bottom pipe
         ctx.fillRect(pipe.x, pipe.topHeight + pipe.gap, pipe.width, canvas.height - (pipe.topHeight + pipe.gap));
     });
 }
 
 function updateBird() {
-    if (!gameStarted || gameOver) return; // Bird only moves if game started and not over
+    if (!bird || !gameStarted || gameOver) return;
 
     bird.velocity += gravity;
     bird.y += bird.velocity;
 
-    // Collision with top/bottom
     if (bird.y + bird.height > canvas.height || bird.y < 0) {
-        // Keep bird within bounds slightly before calling endGame to prevent it visually going too far
         bird.y = Math.max(0, Math.min(bird.y, canvas.height - bird.height));
         bird.velocity = 0;
         endGame();
@@ -102,11 +95,12 @@ function updateBird() {
 }
 
 function updatePipes() {
-    if (!gameStarted || gameOver) return; // Pipes only move if game started and not over
+    if (!gameStarted || gameOver) return;
 
     if (frames % pipeSpawnInterval === 0) {
-        let minPipeHeight = 50; // Minimum height for the top part of the pipe
-        let maxPipeHeight = canvas.height - pipeGap - minPipeHeight; // Max height for top pipe ensuring gap and bottom pipe space
+        let minPipeHeight = 50;
+        let maxPipeHeight = canvas.height - pipeGap - minPipeHeight;
+        if (maxPipeHeight < minPipeHeight) maxPipeHeight = minPipeHeight;
         let topHeight = Math.random() * (maxPipeHeight - minPipeHeight) + minPipeHeight;
 
         pipes.push({
@@ -121,8 +115,7 @@ function updatePipes() {
     pipes.forEach(pipe => {
         pipe.x -= pipeSpeed;
 
-        // Collision detection
-        if (
+        if ( bird &&
             bird.x < pipe.x + pipe.width &&
             bird.x + bird.width > pipe.x &&
             (bird.y < pipe.topHeight || bird.y + bird.height > pipe.topHeight + pipe.gap)
@@ -130,20 +123,18 @@ function updatePipes() {
             endGame();
         }
 
-        // Score
-        if (!pipe.passed && pipe.x + pipe.width < bird.x) {
+        if (!pipe.passed && pipe.x + pipe.width < (bird ? bird.x : 0) ) {
             score++;
             pipe.passed = true;
             scoreBoard.textContent = "Score: " + score;
         }
     });
 
-    // Remove off-screen pipes
     pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 }
 
 function flap() {
-    if (gameOver) return; // Don't flap if game is over
+    if (gameOver || !bird) return;
     if (!gameStarted) {
         gameStarted = true;
         instructionsDiv.style.display = 'none';
@@ -152,10 +143,8 @@ function flap() {
 }
 
 function endGame() {
-    if (gameOver) return; // Prevent multiple calls if already over
+    if (gameOver) return;
     gameOver = true;
-    // gameStarted remains true to indicate the game session occurred, or could be set to false.
-    // For current logic, it just stops updates via the gameOver flag.
     restartButton.style.display = 'block';
     instructionsDiv.textContent = "Game Over! Tap Restart.";
     instructionsDiv.style.display = 'block';
@@ -168,8 +157,8 @@ function gameLoop() {
     updateBird();
     updatePipes();
 
-    drawPipes(); // Draw pipes behind bird
-    drawBird(); // Draw bird on top
+    drawPipes();
+    drawBird();
 
     if (gameStarted && !gameOver) {
          frames++;
@@ -177,78 +166,75 @@ function gameLoop() {
     gameLoopId = requestAnimationFrame(gameLoop);
 }
 
-// Event listeners for controls
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
-        e.preventDefault(); // Prevent page scrolling
+        e.preventDefault();
         flap();
     }
 });
-// Handle touch and mouse click on canvas for flapping
 canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // Prevent page scrolling/zooming on touch
+    e.preventDefault();
     flap();
 });
  canvas.addEventListener('mousedown', (e) => {
-    e.preventDefault(); // Prevent text selection or other default actions
+    e.preventDefault();
     flap();
 });
 
-// Restart game button
 restartButton.addEventListener('click', () => {
     if (gameLoopId) {
         cancelAnimationFrame(gameLoopId);
         gameLoopId = null;
     }
-    setup(); // Re-initialize and start game
+    setup();
 });
 
-// Handle window resize events
 window.addEventListener('resize', () => {
-    // Preserve game state before it's reset by setup()
     const currentScore = score;
-    const birdX = bird ? bird.x : 50; // Keep bird's horizontal position
+    const birdX = bird ? bird.x : 50;
     const wasGameOver = gameOver;
     const wasGameStarted = gameStarted;
 
-    // Stop the current game loop to prevent errors or multiple loops
     if (gameLoopId) {
         cancelAnimationFrame(gameLoopId);
         gameLoopId = null;
     }
+    
+    setup(); // Calls resizeCanvas internally and starts new loop
 
-    // resizeCanvas() is called first inside setup(), so no need to call it here explicitly if setup is called.
-    // However, calling it here ensures canvas dimensions are updated before setup potentially uses them.
-    resizeCanvas(); // Update canvas drawing buffer size first
-
-    // setup() re-initializes game elements based on new canvas size
-    // and resets score, gameOver, gameStarted, etc. It also starts a new gameLoop.
-    setup();
-
-    // Restore the preserved state after setup() has run
     score = currentScore;
     scoreBoard.textContent = "Score: " + score;
 
-    if (bird) { // bird object is recreated by setup()
-        bird.x = birdX; // Restore its horizontal position
-        // bird.y is set to canvas.height / 2 by setup(), which is appropriate.
+    if (bird) {
+        bird.x = birdX;
     }
 
-    gameStarted = wasGameStarted; // Restore whether the game had actually started
+    gameStarted = wasGameStarted;
 
     if (wasGameOver) {
-        endGame(); // This will correctly set gameOver = true and update UI
+        endGame();
     } else if (wasGameStarted) {
-        instructionsDiv.style.display = 'none'; // If game was running, hide instructions
+        instructionsDiv.style.display = 'none';
     }
-    // If game was not started (!wasGameStarted), setup() handles showing instructions.
-
-    // An immediate redraw after state restoration ensures the UI is correct.
-    // Note: setup() calls gameLoop(), which will also draw. This is for the very first frame.
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPipes(); // Pipes are reset by setup
-    drawBird();  // Bird is at its new/restored position
+    drawPipes();
+    drawBird();
 });
 
-// Initial setup when the script loads
-setup();
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        if (gameLoopId) {
+            cancelAnimationFrame(gameLoopId);
+            gameLoopId = null;
+            console.log("Game paused due to page visibility.");
+        }
+    } else {
+        if (!gameLoopId && gameStarted && !gameOver) {
+            console.log("Game resumed due to page visibility.");
+            gameLoop();
+        }
+    }
+});
+
+setup(); // Initial setup
