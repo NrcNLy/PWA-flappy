@@ -812,7 +812,7 @@ const questions = [
                         label: 'Your Score',
                         data: dataValues,
                         backgroundColor: factorColors,
-                        borderColor: factorColors.map(color => Chart.helpers.color(color).darken(0.2).rgbString()), 
+                        borderColor: factorColors, // CORRECTED
                         borderWidth: 1
                     }]
                 },
@@ -926,8 +926,8 @@ const questions = [
                     datasets: [{
                         label: 'Facet Score',
                         data: facetData,
-                        backgroundColor: Chart.helpers.color(factorConfig.color).alpha(0.7).rgbString(),
-                        borderColor: factorConfig.color,
+                        backgroundColor: factorConfig.color, // CORRECTED
+                        borderColor: factorConfig.color,   // CORRECTED
                         borderWidth: 1
                     }]
                 },
