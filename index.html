@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Factor Personality Insights Quiz</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="theme-color" content="#3730a3"> {/* indigo-800, can adjust */}
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Personality Insights">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png"> 
+    {/* You can add more apple-touch-icon sizes here if needed */}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-slate-300 font-sans leading-normal tracking-normal">
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <section id="introSequenceScreen" class="hidden bg-slate-800 p-6 md:p-10 rounded-xl shadow-2xl">
+            <div id="introSlideDisplayArea" class="content-transition fade-in">
+                {/* Content will be injected by JS from script.js */}
+            </div>
+            <div id="introNavigation" class="mt-8 flex justify-between items-center">
+                <button id="introPrevButton" class="nav-button-dark">Previous (← / ↑)</button>
+                <button id="introNextButton" class="quiz-button-dark">Next (→ / ↓)</button>
+            </div>
+        </section>
+
+        <section id="quizScreen" class="hidden bg-slate-800 p-6 md:p-10 rounded-xl shadow-2xl">
+            <div id="progressContainer" class="mb-6">
+                <p id="progressText" class="text-center text-indigo-400 font-semibold mb-2"></p>
+                <div class="w-full bg-slate-700 rounded-full h-4">
+                    <div id="progressBar" class="bg-indigo-500 h-4 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+                </div>
+            </div>
+            <div id="questionDisplayArea" class="content-transition fade-in"> 
+                <p class="text-center text-indigo-300 font-medium mb-2 text-2xl md:text-3xl">Would You Rather:</p>
+                <h2 id="questionPromptText" class="text-lg md:text-xl font-medium mb-6 text-slate-200 text-center min-h-[50px] flex items-center justify-center"></h2>
+                <div id="optionsParentContainer" class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 justify-center items-stretch"> 
+                </div>
+            </div>
+            <div class="mt-8 flex justify-between items-center"> 
+                <button id="prevQuestionButton" class="nav-button-dark">Previous</button>
+                <button id="skipQuestionButton" class="skip-button-dark">Skip Question</button>
+            </div>
+        </section>
+
+        <section id="resultsScreen" class="hidden bg-slate-800 p-6 md:p-10 rounded-xl shadow-2xl space-y-8">
+            <div class="text-center">
+                <h1 id="resultsHeadline" class="text-3xl md:text-4xl font-bold text-indigo-400 mb-1">Your Personalized Personality Insights</h1>
+                <p class="text-lg text-indigo-300 mb-2">'Would You Rather' Profile Summary</p>
+                <p class="text-slate-400">You've completed the quiz! Here's a look at your unique personality profile.</p>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-indigo-400 mb-4 border-b-2 border-indigo-800 pb-2">Your Personality Profile</h2>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-inner">
+                    <canvas id="mainFactorBarChart" class="max-w-full md:max-w-2xl mx-auto h-[300px] md:h-[400px]"></canvas>
+                </div>
+                <p class="text-sm text-slate-400 mt-3 text-center">
+                    <span class="font-semibold">Note:</span> Your scores (0-100) can be thought of as percentiles. For example, a score of 75 in a trait means you scored higher in that tendency than approximately 75 out of 100 typical individuals.
+                </p>
+                <p id="facetInstruction" class="text-lg text-indigo-300 mt-4 text-center font-semibold pulsing-glow rounded-md p-2">Click on a bar to see a detailed breakdown of its facets.</p>
+            </div>
+            
+            <div id="facetBreakdownContainer" class="mt-6"> 
+                <h3 id="facetChartTitle" class="text-xl font-semibold text-indigo-300 mb-3 text-center"></h3>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-inner">
+                    <canvas id="facetBarChart" class="max-w-full md:max-w-xl mx-auto h-[250px] md:h-[300px]"></canvas>
+                </div>
+                <div class="text-center mt-3">
+                    <button id="closeFacetViewButton" class="skip-button-dark text-xs">Close Facet View</button>
+                </div>
+            </div>
+
+
+            <div>
+                <h2 class="text-2xl font-semibold text-indigo-400 mb-4 border-b-2 border-indigo-800 pb-2">Scores at a Glance</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-slate-700 shadow rounded-lg">
+                        <thead class="bg-slate-600">
+                            <tr>
+                                <th class="py-3 px-4 text-left font-semibold text-slate-200">Factor</th>
+                                <th class="py-3 px-4 text-left font-semibold text-slate-200">Your Score (0-100)</th>
+                                <th class="py-3 px-4 text-left font-semibold text-slate-200">Deviation from Avg.</th>
+                                <th class="py-3 px-4 text-left font-semibold text-slate-200">General Level</th>
+                                <th class="py-3 px-4 text-left font-semibold text-slate-200">Profile Highlight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scoresTableBody" class="text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="detailedInsightsContainer" class="space-y-6">
+                </div>
+            
+            <div id="traitInteractionsContainer" class="p-4 rounded-lg shadow-md bg-slate-700">
+                <h2 class="text-2xl font-semibold text-indigo-400 mb-3 border-b-2 border-indigo-800 pb-2">Potential Trait Interactions</h2>
+                <p id="traitInteractionsText" class="text-slate-300"></p>
+            </div>
+
+
+            <div>
+                <h2 class="text-2xl font-semibold text-indigo-400 mb-4 border-b-2 border-indigo-800 pb-2">Your Unique Trait Nuances (All Facets)</h2>
+                <p class="text-slate-400 mb-4">This section shows your scores for all specific facets within each dimension. Hover over a facet for its definition.</p>
+                <div id="facetSpotlightContainer" class="space-y-6">
+                    </div>
+            </div>
+            
+            <div>
+                <h2 class="text-2xl font-semibold text-indigo-400 mb-4 border-b-2 border-indigo-800 pb-2">Export Your Profile</h2>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="exportPdfButton" class="quiz-button-dark flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v4.586A1 1 0 0115.414 9.5L10.5 14.414a1 1 0 01-1.414 0L4.586 9.5A1 1 0 014 8.586V4zm12 11.414L10.414 10 16 4.414V15.414zM8.9 16H6a2 2 0 01-2-2V6.414l3.707 3.707a1 1 0 001.414 0L12.586 6.414V8H10a2 2 0 00-2 2v6z" clip-rule="evenodd" /></svg>
+                        Download PDF Summary
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div id="pdfExportContainer">
+            <h1 id="pdfTitle" style="text-align: center; font-size: 18pt; margin-bottom: 0.1in;">'Would You Rather' Personality Insights Tool</h1>
+            <p id="pdfSubtitle" style="text-align: center; font-size: 12pt; margin-bottom: 0.3in; color: #555;">Profile Summary</p>
+            <p id="pdfDate" style="text-align: center; font-size: 10pt; margin-bottom: 0.3in;">Report Generated: </p>
+             <p style="font-size: 9pt; text-align: center; margin-bottom: 0.2in; color: #444;">
+                Note: Scores (0-100) can be seen as percentiles. A score of 75 means you scored higher in that tendency than ~75 out of 100 typical individuals.
+            </p>
+            <div class="pdf-chart-container" style="margin-bottom: 0.3in;">
+                <img id="pdfChartImage" src="" alt="Personality Factor Chart" />
+            </div>
+            <h2 style="font-size: 14pt; border-bottom: 1px solid #eee; padding-bottom: 0.1in;">Scores Summary</h2>
+            <table id="pdfScoresTable">
+                <thead>
+                    <tr><th>Factor</th><th>Your Score (0-100)</th><th>Deviation from Avg.</th><th>General Level</th><th>Profile Highlight</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h2 style="font-size: 14pt; border-bottom: 1px solid #eee; padding-bottom: 0.1in; margin-top:0.3in;">Detailed Factor Insights</h2>
+            <div id="pdfInsightsContainer"></div>
+            <div id="pdfTraitInteractionsContainer"></div> 
+            <h2 style="font-size: 14pt; border-bottom: 1px solid #eee; padding-bottom: 0.1in; margin-top:0.3in;">Facet Score Details</h2>
+            <div id="pdfFacetSpotlightContainer"></div>
+            <p style="font-size: 8pt; text-align: center; margin-top: 0.5in; color: #777;">
+                Disclaimer: This report is for informational and entertainment purposes only and is not a substitute for professional psychological assessment.
+            </p>
+        </div>
+        
+        {/* Custom Tooltip Element */}
+        <div id="customTooltip" class="hidden"></div>
+
+    </div>
+
+    <script src="script.js" defer></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js') // Ensure correct path if sw.js is in root
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+    
+    {/* These are loaded in script.js now, so not needed here if script.js handles them */}
+    {/* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> */}
+    {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> */}
+    {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> */}
+
+
+</body>
+</html>

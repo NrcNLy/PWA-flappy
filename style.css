@@ -1,0 +1,346 @@
+/* Define Color Palette and Theme Variables */
+:root {
+    /* Base Dark Theme Colors */
+    --main-bg-color: #111827; /* slate-900 */
+    --card-bg-color: #1F2937; /* slate-800 */
+    --card-bg-hover-color: #334155; /* slate-700 */
+    --text-primary-color: #D1D5DB; /* slate-300 */
+    --text-secondary-color: #9CA3AF; /* slate-400 */
+    --text-tertiary-color: #6B7280; /* slate-500 */
+    --border-light-color: #374151; /* slate-700 */
+    --border-medium-color: #4B5563; /* slate-600 */
+    --border-dark-color: #1E3A8A; /* indigo-800 (used for section underlines) */
+
+    /* Interactive Element Colors (Primary Theme: Indigo) */
+    --interaction-primary-color: #4f46e5; /* indigo-600 */
+    --interaction-primary-hover-color: #4338ca; /* indigo-700 */
+    --interaction-primary-text-color: #FFFFFF; /* white */
+    
+    --interaction-secondary-color: #312E81; /* indigo-800 (darker shade for option buttons) */
+    --interaction-secondary-hover-color: #3730a3; /* indigo-700 */
+    --interaction-secondary-text-color: #E0E7FF; /* indigo-100 (light text for dark buttons) */
+
+    --interaction-selected-bg-color: #6366f1; /* indigo-500 */
+    --interaction-selected-border-color: #818cf8; /* indigo-400 */
+    --interaction-selected-text-color: #FFFFFF; /* white */
+
+    /* Accent/Special Button Colors */
+    --nav-button-bg-color: #4B5563; /* slate-600 */
+    --nav-button-hover-bg-color: #6B7280; /* slate-500 */
+    --nav-button-text-color: #E5E7EB; /* slate-200 */
+
+    --skip-button-bg-color: #334155; /* slate-700 */
+    --skip-button-hover-bg-color: #4B5563; /* slate-600 */
+    --skip-button-text-color: #F87171; /* red-400 */
+    --skip-button-hover-text-color: #EF4444; /* red-500 */
+    --skip-button-border-color: #4B5563; /* slate-600 */
+
+    --progress-bar-bg-color: #374151; /* slate-700 */
+    --progress-bar-fill-color: #4f46e5; /* indigo-600 */
+
+    /* Pulsing Glow Color (based on primary interaction color) */
+    --pulsing-glow-color-rgba: rgba(79, 70, 229, 0.6); /* indigo-600 with alpha */
+    --pulsing-glow-fade-rgba: rgba(79, 70, 229, 0);
+
+    /* Factor Specific Colors */
+    --factor-openness-color: #2DD4BF; 
+    --factor-openness-bg-light-dark: #0F766E; 
+    --factor-conscientiousness-color: #60A5FA; 
+    --factor-conscientiousness-bg-light-dark: #2563EB;
+    --factor-extraversion-color: #FB923C; 
+    --factor-extraversion-bg-light-dark: #EA580C;
+    --factor-agreeableness-color: #4ADE80; 
+    --factor-agreeableness-bg-light-dark: #16A34A;
+    --factor-neuroticism-color: #A78BFA; 
+    --factor-neuroticism-bg-light-dark: #7C3AED;
+
+    /* Chart.js Specific Dark Mode Colors */
+    --chart-default-text-color: var(--text-secondary-color);
+    --chart-grid-border-color: var(--border-light-color);
+    --chart-tooltip-bg-color: #1F2937; /* slate-800 */
+    --chart-tooltip-title-color: var(--text-primary-color);
+    --chart-tooltip-body-color: var(--text-secondary-color);
+    --chart-average-line-color: var(--text-tertiary-color);
+}
+
+/* General Body Styles (Dark Mode) */
+body {
+    background-color: var(--main-bg-color); 
+    color: var(--text-primary-color); 
+    font-family: sans-serif; 
+    line-height: 1.6; 
+    letter-spacing: 0.025em; 
+}
+
+/* Custom Scrollbar for Dark Mode */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--card-bg-color); }
+::-webkit-scrollbar-thumb { background: var(--border-medium-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary-color); }
+
+/* Factor-Specific Text Color Classes (used by JS to style factor names) */
+.text-openness { color: var(--factor-openness-color); } 
+.border-openness { border-color: var(--factor-openness-color); }
+.bg-openness-light-dark { background-color: var(--factor-openness-bg-light-dark); } 
+
+.text-conscientiousness { color: var(--factor-conscientiousness-color); } 
+.border-conscientiousness { border-color: var(--factor-conscientiousness-color); }
+.bg-conscientiousness-light-dark { background-color: var(--factor-conscientiousness-bg-light-dark); }
+
+.text-extraversion { color: var(--factor-extraversion-color); } 
+.border-extraversion { border-color: var(--factor-extraversion-color); }
+.bg-extraversion-light-dark { background-color: var(--factor-extraversion-bg-light-dark); }
+
+.text-agreeableness { color: var(--factor-agreeableness-color); } 
+.border-agreeableness { border-color: var(--factor-agreeableness-color); }
+.bg-agreeableness-light-dark { background-color: var(--factor-agreeableness-bg-light-dark); }
+
+.text-neuroticism { color: var(--factor-neuroticism-color); } 
+.border-neuroticism { border-color: var(--factor-neuroticism-color); }
+.bg-neuroticism-light-dark { background-color: var(--factor-neuroticism-bg-light-dark); }
+
+/* PDF Export Container Styles (remain light-themed for PDF) */
+#pdfExportContainer {
+    position: absolute; left: -9999px; width: 8.5in; 
+    background: white; font-family: sans-serif; color: #333;
+    padding: 0.5in; box-sizing: border-box;
+}
+#pdfExportContainer h1 { font-size: 20pt; text-align: center; margin-bottom: 0.1in; color: #2c3e50; }
+#pdfExportContainer h2 { font-size: 14pt; border-bottom: 1px solid #eee; padding-bottom: 0.1in; margin-top:0.3in; margin-bottom: 0.2in; color: #34495e; }
+#pdfExportContainer h3 { font-size: 11pt; font-weight: bold; margin-bottom: 0.05in; /* Factor color applied inline in JS */ }
+#pdfExportContainer h4 { font-size: 10pt; font-weight: bold; margin-top: 0.15in; margin-bottom: 0.05in; color: #555; }
+#pdfExportContainer p { font-size: 10pt; line-height: 1.4; margin-bottom: 0.1in; }
+#pdfExportContainer table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 0.2in; }
+#pdfExportContainer th, #pdfExportContainer td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+#pdfExportContainer th { background-color: #f2f2f2; font-weight: bold; }
+#pdfExportContainer .pdf-chart-container { width: 100%; max-width: 600px; margin: 0 auto 0.2in auto; }
+#pdfExportContainer .pdf-chart-container img { width: 100%; height: auto; border: 1px solid #eee; } 
+#pdfExportContainer .profile-highlight-pdf { font-style: italic; font-size: 8.5pt; color: #555; }
+#pdfExportContainer .pdf-factor-insight-block { margin-bottom: 0.25in; page-break-inside: avoid; }
+#pdfExportContainer .pdf-facet-list { padding-left: 0; list-style-type: none; font-size: 9pt;}
+#pdfExportContainer .pdf-facet-list li { margin-bottom: 0.05in; }
+
+/* Base Styles for Reusable Components (colors now use variables) */
+.quiz-button-dark {
+    background-color: var(--interaction-primary-color);
+    color: var(--interaction-primary-text-color);
+    font-weight: bold;
+    padding: 0.75rem 1.5rem; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+    transition: all 0.15s ease-in-out;
+    transform: scale(1);
+}
+.quiz-button-dark:hover {
+    background-color: var(--interaction-primary-hover-color);
+    transform: scale(1.05);
+}
+
+.option-button-dark {
+    flex: 1;
+    background-color: var(--interaction-secondary-color); 
+    color: var(--interaction-secondary-text-color);
+    font-weight: 600; 
+    padding: 1rem 1.5rem; 
+    border: 1px solid var(--interaction-primary-color); /* Use primary for border */
+    border-radius: 0.5rem; 
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06); 
+    transition: all 0.15s ease-in-out;
+    text-align: center;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.option-button-dark:hover {
+    background-color: var(--interaction-secondary-hover-color);
+}
+.option-button-dark.selected {
+    background-color: var(--interaction-selected-bg-color);
+    border-color: var(--interaction-selected-border-color);
+    color: var(--interaction-selected-text-color);
+    box-shadow: 0 0 0 2px var(--interaction-selected-border-color); 
+}
+
+.nav-button-dark {
+    background-color: var(--nav-button-bg-color);
+    color: var(--nav-button-text-color);
+    font-weight: bold;
+    padding: 0.5rem 1rem; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06); 
+    transition: background-color 0.15s ease-in-out;
+}
+.nav-button-dark:hover {
+    background-color: var(--nav-button-hover-bg-color);
+}
+.nav-button-dark:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.skip-button-dark { 
+    background-color: var(--skip-button-bg-color);
+    color: var(--skip-button-text-color);
+    font-weight: 600; 
+    padding: 0.5rem 1rem; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+    border: 1px solid var(--skip-button-border-color);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    font-size: 0.875rem; 
+}
+.skip-button-dark:hover {
+    background-color: var(--skip-button-hover-bg-color);
+    color: var(--skip-button-hover-text-color); 
+}
+
+/* Intro Slide Specific Styling */
+.intro-slide-content {
+    text-align: left;
+    margin-bottom: 2rem; 
+    padding-left: 0.5rem; 
+    padding-right: 0.5rem; 
+    font-size: 1rem; 
+    line-height: 1.75rem; 
+}
+@media (min-width: 768px) { 
+    .intro-slide-content {
+        padding-left: 1.5rem; 
+        padding-right: 1.5rem; 
+        font-size: 1.125rem; 
+    }
+}
+.intro-slide-content ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    padding-left: 1rem; 
+}
+.intro-slide-content ul li {
+    margin-bottom: 0.25rem; 
+}
+@media (min-width: 768px) { 
+    .intro-slide-content ul li {
+        margin-bottom: 0.5rem; 
+    }
+}
+.intro-slide-content kbd {
+    padding: 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    font-weight: 600; 
+    color: var(--text-primary-color); 
+    background-color: var(--border-light-color); 
+    border: 1px solid var(--border-medium-color); 
+    border-radius: 0.375rem; 
+}
+
+/* Content Transition Animations */
+.content-transition { 
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.fade-out { 
+    opacity: 0; 
+    transform: translateY(20px); 
+} 
+.fade-in { 
+    opacity: 1; 
+    transform: translateY(0px); 
+}
+
+/* Facet Breakdown Container Animation */
+#facetBreakdownContainer {
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out, padding 0.5s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+#facetBreakdownContainer.visible {
+    max-height: 500px; 
+    opacity: 1;
+    margin-top: 1.5rem; 
+    padding-top: 1rem; 
+    padding-bottom: 1rem;
+}
+
+/* Pulsing Glow Effect for Facet Instruction */
+.pulsing-glow {
+    animation: pulse-box 2.5s infinite;
+    border-radius: 0.375rem; 
+}
+@keyframes pulse-box {
+    0% { box-shadow: 0 0 0 0 var(--pulsing-glow-color-rgba); } 
+    70% { box-shadow: 0 0 0 12px var(--pulsing-glow-fade-rgba); }
+    100% { box-shadow: 0 0 0 0 var(--pulsing-glow-fade-rgba); }
+}
+
+/* Custom Tooltip for Facet List */
+#customTooltip {
+    position: absolute;
+    background-color: var(--card-bg-hover-color); 
+    color: var(--text-primary-color); 
+    font-size: 0.875rem; 
+    padding: 0.75rem; 
+    border-radius: 0.375rem; 
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
+    z-index: 50;
+    pointer-events: none; 
+    max-width: 20rem; 
+    border: 1px solid var(--border-medium-color);
+}
+#customTooltip strong {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.25rem; 
+}
+/* Ensure hidden class from Tailwind is effective for JS toggling */
+.hidden {
+    display: none !important; 
+}
+
+/* Main page sections styling using variables */
+#introSequenceScreen, #quizScreen, #resultsScreen {
+    background-color: var(--card-bg-color);
+}
+#progressContainer p, #resultsHeadline, #detailedInsightsContainer h2, #traitInteractionsContainer h2, #facetSpotlightContainer h2, #resultsScreen > div > h2 {
+    color: var(--interaction-primary-color); /* Indigo for headers */
+}
+#progressContainer .bg-slate-700 { /* Progress bar track */
+    background-color: var(--border-light-color);
+}
+#progressContainer .bg-indigo-500 { /* Progress bar fill */
+    background-color: var(--progress-bar-fill-color);
+}
+#questionPromptText {
+    color: var(--text-primary-color);
+}
+#optionsParentContainer + div button { /* Previous/Skip buttons container */
+    /* Styles for these buttons are already defined by their specific classes */
+}
+#resultsScreen .bg-slate-700 { /* Chart backgrounds, table header/body */
+    background-color: var(--card-bg-hover-color);
+}
+#resultsScreen .border-indigo-800 { /* Section underlines */
+    border-color: var(--border-dark-color);
+}
+#scoresTableBody {
+    color: var(--text-primary-color);
+}
+#scoresTableBody thead {
+    background-color: var(--border-medium-color);
+}
+#scoresTableBody th {
+    color: var(--text-primary-color);
+}
+#facetInstruction {
+    color: var(--interaction-primary-color); /* Indigo for this instruction text */
+}
+#traitInteractionsText {
+    color: var(--text-primary-color);
+}
+#pdfExportContainer .pdf-chart-container img { /* Styling for chart image in PDF container */
+    border: 1px solid #dddddd; /* Light border for the image itself */
+}
+
