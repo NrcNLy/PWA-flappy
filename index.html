@@ -7,14 +7,10 @@
     
     <link rel="manifest" href="manifest.json">
     
-    <meta name="theme-color" content="#3730a3"> {/* indigo-800, can adjust */}
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#3730a3"> <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Personality Insights">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png"> 
-    {/* You can add more apple-touch-icon sizes here if needed */}
-
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="stylesheet" href="style.css">
@@ -24,8 +20,7 @@
 
         <section id="introSequenceScreen" class="hidden bg-slate-800 p-6 md:p-10 rounded-xl shadow-2xl">
             <div id="introSlideDisplayArea" class="content-transition fade-in">
-                {/* Content will be injected by JS from script.js */}
-            </div>
+                </div>
             <div id="introNavigation" class="mt-8 flex justify-between items-center">
                 <button id="introPrevButton" class="nav-button-dark">Previous (← / ↑)</button>
                 <button id="introNextButton" class="quiz-button-dark">Next (→ / ↓)</button>
@@ -153,32 +148,25 @@
             </p>
         </div>
         
-        {/* Custom Tooltip Element */}
         <div id="customTooltip" class="hidden"></div>
 
     </div>
 
     <script src="script.js" defer></script>
 
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js') // CORRECTED LINE
-                .then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                })
-                .catch(error => {
-                    console.log('ServiceWorker registration failed: ', error);
-                });
-        });
-    }
-</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js') // CORRECTED PATH: Ensure sw.js is in the same directory or adjust path accordingly
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
     
-    {/* These are loaded in script.js now, so not needed here if script.js handles them */}
-    {/* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> */}
-    {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> */}
-    {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> */}
-
-
-</body>
+    </body>
 </html>
