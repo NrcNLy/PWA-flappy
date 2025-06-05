@@ -1456,8 +1456,3 @@ const questions = [
         // --- STARTUP ---
         initializeApp(); 
         // --- END STARTUP ---
-
-    </script>
-</body>
-</html>
-
